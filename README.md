@@ -1,57 +1,81 @@
-# NFL QB Wins Challenge
+# StatStack Lite
 
-A fun web game where players try to reach 2,500 total QB career wins by selecting quarterbacks for randomly chosen NFL teams.
+A modern, mobile-first web game where players test their NFL knowledge by matching quarterbacks to teams and accumulating their career wins.
 
-## Features
+## Core Game Mechanics
 
-- 20 rounds of gameplay
-- Random NFL team selection each round
-- QB validation and win tracking
-- Score tier system
-- Modern, responsive UI with Tailwind CSS
+- **20 Rounds**: Each round presents a random NFL team
+- **QB Selection**: Name quarterbacks who played for the displayed team
+- **Scoring**: Earn points based on the QB's total career wins across all teams
+- **No Repeats**: Each QB can only be used once per game
+- **Goal**: Aim for 2,500+ total career wins to achieve GOAT status
 
-## Getting Started
+## Game Modes
+
+### Easy Mode
+- Available QBs are displayed in a grid
+- Select from valid options for the current team
+- Full points awarded for each pick
+- Perfect for learning or casual play
+
+### Standard Mode
+- Type QB names manually
+- Use "help" feature for assistance (50% point penalty)
+- Long-press input for QB suggestions
+- More challenging, strategic gameplay
+
+## Special Features
+
+- **Help System**: Type "help" or long-press for QB suggestions (Standard Mode)
+- **Brady Effect**: Special animation for Tom Brady picks
+- **Halftime Show**: Special effect at round 10
+- **Mobile-First**: Optimized for small screens with no scrolling during gameplay
+- **Dark Mode**: Automatic theme switching based on system preferences
+
+## Technical Stack
+
+- React 18 + TypeScript
+- Vite for build tooling
+- Tailwind CSS for styling
+- Zustand for state management
+- Firebase for deployment and leaderboards
+
+## Development Setup
 
 1. Clone the repository
 2. Install dependencies:
    ```bash
    npm install
    ```
-3. Start the development server:
+3. Start development server:
    ```bash
    npm run dev
    ```
-4. Open your browser and navigate to `http://localhost:5173`
+4. Build for production:
+   ```bash
+   npm run build
+   ```
+5. Deploy to Firebase:
+   ```bash
+   npm run deploy
+   ```
 
-## Game Rules
+## Design Principles
 
-1. Each round, a random NFL team is shown
-2. Enter a QB who played for that team
-3. Enter the QB's total career wins
-4. QBs cannot be reused
-5. No skipping teams
-6. Try to reach 2,500 total wins across 20 rounds
+- **Mobile-First**: All layouts prioritize small screen proportions
+- **Single-Screen UX**: Core gameplay elements fit without scrolling
+- **Minimalist Style**: Clean, NYT Games-inspired design
+- **Protected Logic**: Score calculations and game mechanics are carefully preserved
 
-## Score Tiers
+## Contributing
 
-- < 2000: College Walk-On
-- 2000-2199: Pop Warner
-- 2200-2299: HS All-American
-- 2300-2399: Draft Pick
-- 2400-2499: Heisman Winner
-- 2500+: GOAT
+When contributing, please follow these guidelines:
+1. Maintain mobile-first design principles
+2. Ensure all gameplay fits on a single screen
+3. Keep the minimalist aesthetic
+4. Don't modify core gameplay logic without discussion
+5. Test on both mobile and desktop devices
 
-## Tech Stack
+## Live Demo
 
-- React + TypeScript
-- Vite
-- Tailwind CSS
-- Zustand (State Management)
-
-## Future Enhancements
-
-- Leaderboard integration
-- Multiplayer mode
-- Hint system
-- Difficulty modes
-- QB database integration 
+Visit [https://statstack-lite.web.app](https://statstack-lite.web.app) to play the game. 

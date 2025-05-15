@@ -1,0 +1,7 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Never modify score calculations, pick validation, round tracking, or animations unless requested.
+

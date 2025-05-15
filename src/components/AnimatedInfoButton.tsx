@@ -67,9 +67,16 @@ export const AnimatedInfoButton = forwardRef<HTMLButtonElement, AnimatedInfoButt
         ref={ref}
         onClick={handleClick}
         className={`${className} ${shouldAnimate ? 'animate-info-pulse' : ''}`}
-        aria-label="Game Info"
+        aria-label="Menu"
       >
-        <span className="text-sm sm:text-base font-semibold">?</span>
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          viewBox="0 0 24 24" 
+          fill="currentColor" 
+          className="w-4 h-4 sm:w-5 sm:h-5"
+        >
+          <path d="M12 8.25a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm0 5.25a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm0 5.25a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+        </svg>
       </button>
     );
   }

@@ -27,7 +27,7 @@ export const LivePicksPanel: React.FC<LivePicksPanelProps> = ({ picks, showScore
                   className="w-6 h-6 object-contain"
                 />
                 <div>
-                  <div className="font-medium text-main dark:text-main-dark">
+                  <div className="max-w-[120px] overflow-x-auto whitespace-nowrap sm:max-w-none sm:overflow-visible sm:whitespace-normal font-medium text-main dark:text-main-dark">
                     {pick.displayName}
                   </div>
                   {pick.usedHelp && (

@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+No scrolling for primary gameplay. All major elements (shuffler, picks, input) must fit on one screen height.

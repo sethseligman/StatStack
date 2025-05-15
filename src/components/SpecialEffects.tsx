@@ -2,37 +2,57 @@ import React, { useEffect, useState } from 'react';
 
 interface SpecialEffectsProps {
   isVisible: boolean;
+  score?: number;
+  onComplete?: () => void;
 }
 
-export const SpecialEffects: React.FC<SpecialEffectsProps> = ({ isVisible }) => {
+export const SpecialEffects: React.FC<SpecialEffectsProps> = ({ 
+  isVisible, 
+  score,
+  onComplete 
+}) => {
   const [showText1, setShowText1] = useState(false);
   const [showText2, setShowText2] = useState(false);
+  const [showScore, setShowScore] = useState(false);
 
   useEffect(() => {
     if (isVisible) {
-      // First text appears immediately with the flame
+      // First text appears immediately
       setShowText1(true);
-      
-      // Second text appears after 0.8s
-      const timer1 = setTimeout(() => {
-        setShowText1(false);
+
+      // Second text appears after 0.75s
+      const text2Timer = setTimeout(() => {
         setShowText2(true);
-      }, 800);
-      
-      // Everything disappears after 2s
-      const timer2 = setTimeout(() => {
+      }, 750);
+
+      // Score appears after 1.5s
+      const scoreTimer = setTimeout(() => {
+        if (score !== undefined) {
+          setShowScore(true);
+        }
+      }, 1500);
+
+      // Effect ends after 2s
+      const completeTimer = setTimeout(() => {
+        setShowText1(false);
         setShowText2(false);
+        setShowScore(false);
+        if (onComplete) {
+          onComplete();
+        }
       }, 2000);
 
       return () => {
-        clearTimeout(timer1);
-        clearTimeout(timer2);
+        clearTimeout(text2Timer);
+        clearTimeout(scoreTimer);
+        clearTimeout(completeTimer);
       };
     } else {
       setShowText1(false);
       setShowText2(false);
+      setShowScore(false);
     }
-  }, [isVisible]);
+  }, [isVisible, score, onComplete]);
 
   if (!isVisible) return null;
 
@@ -62,6 +82,14 @@ export const SpecialEffects: React.FC<SpecialEffectsProps> = ({ isVisible }) => 
             ${showText2 ? 'opacity-100' : 'opacity-0'}`}>
             LET'S F#%KING GO
           </div>
+          {score !== undefined && (
+            <div className={`transition-all duration-500 text-[120px] md:text-[160px] font-black text-[#4CAF50]
+              ${showScore ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}
+              drop-shadow-[0_0_20px_rgba(76,175,80,0.8)]
+              [-webkit-text-stroke:2px_white]`}>
+              +{score}
+            </div>
+          )}
         </div>
       </div>
     </div>
