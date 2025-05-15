@@ -1,81 +1,59 @@
-# StatStack Lite
+# StatStack
 
-A modern, mobile-first web game where players test their NFL knowledge by matching quarterbacks to teams and accumulating their career wins.
+A collection of sports trivia games, starting with the NFL Quarterback Career Wins Challenge.
 
-## Core Game Mechanics
+## NFL QB Career Wins Challenge
 
-- **20 Rounds**: Each round presents a random NFL team
-- **QB Selection**: Name quarterbacks who played for the displayed team
-- **Scoring**: Earn points based on the QB's total career wins across all teams
-- **No Repeats**: Each QB can only be used once per game
-- **Goal**: Aim for 2,500+ total career wins to achieve GOAT status
+Test your NFL knowledge by matching quarterbacks to their teams and career wins. Each QB can only be used once, and you'll get points based on their career wins.
 
-## Game Modes
+### Features
 
-### Easy Mode
-- Available QBs are displayed in a grid
-- Select from valid options for the current team
-- Full points awarded for each pick
-- Perfect for learning or casual play
+- **Daily Challenge**: New teams, new challenge, every day at midnight
+- **Practice Mode**: Unlimited games with random teams
+- **Mobile-First Design**: Optimized for both mobile and desktop play
+- **Dark Mode Support**: Comfortable viewing in any lighting condition
+- **Accessibility**: Built with keyboard navigation and screen reader support
 
-### Standard Mode
-- Type QB names manually
-- Use "help" feature for assistance (50% point penalty)
-- Long-press input for QB suggestions
-- More challenging, strategic gameplay
+### How to Play
 
-## Special Features
+1. Each round shows a random NFL team
+2. Name any QB who played for that team
+3. Earn their total career wins across all teams
+4. No repeats allowed
+5. 20 rounds total
+6. Target score: 2,500 career wins
 
-- **Help System**: Type "help" or long-press for QB suggestions (Standard Mode)
-- **Brady Effect**: Special animation for Tom Brady picks
-- **Halftime Show**: Special effect at round 10
-- **Mobile-First**: Optimized for small screens with no scrolling during gameplay
-- **Dark Mode**: Automatic theme switching based on system preferences
+### Development
 
-## Technical Stack
+This project is built with:
+- React
+- TypeScript
+- Vite
+- TailwindCSS
+- Firebase
 
-- React 18 + TypeScript
-- Vite for build tooling
-- Tailwind CSS for styling
-- Zustand for state management
-- Firebase for deployment and leaderboards
-
-## Development Setup
+### Local Setup
 
 1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start development server:
-   ```bash
-   npm run dev
-   ```
-4. Build for production:
-   ```bash
-   npm run build
-   ```
-5. Deploy to Firebase:
-   ```bash
-   npm run deploy
-   ```
+```bash
+git clone https://github.com/sethseligman/StatStack.git
+cd StatStack
+```
 
-## Design Principles
+2. Install dependencies
+```bash
+npm install
+```
 
-- **Mobile-First**: All layouts prioritize small screen proportions
-- **Single-Screen UX**: Core gameplay elements fit without scrolling
-- **Minimalist Style**: Clean, NYT Games-inspired design
-- **Protected Logic**: Score calculations and game mechanics are carefully preserved
+3. Start development server
+```bash
+npm run dev
+```
 
-## Contributing
+### Contributing
 
-When contributing, please follow these guidelines:
-1. Maintain mobile-first design principles
-2. Ensure all gameplay fits on a single screen
-3. Keep the minimalist aesthetic
-4. Don't modify core gameplay logic without discussion
-5. Test on both mobile and desktop devices
+This is a private repository. Please contact the repository owner for contribution guidelines.
 
-## Live Demo
+### License
 
-Visit [https://statstack-lite.web.app](https://statstack-lite.web.app) to play the game. 
+All rights reserved. This source code is private and confidential.
