@@ -469,7 +469,8 @@ export const Game: React.FC = () => {
             gameMode: 'daily',
             optimalScore: obj.optimalScore || 0,
             optimalPicks: obj.optimalPicks || [],
-            isGameOver: false
+            isGameOver: false,
+            gameStartTime: obj.gameStartTime || obj.timestamp || Date.now()
           });
           // Keep rules modal visible for resume option
           if (obj.teams) {
@@ -480,7 +481,10 @@ export const Game: React.FC = () => {
             setCurrentTeam(currentTeam);
             setRecentTeams(obj.teams.slice(0, obj.picks.length + 1));
             // Skip fetching new daily challenge since we're restoring
-            useGameStore.setState({ gameMode: 'daily' });
+            useGameStore.setState({ 
+              gameMode: 'daily',
+              totalScore: obj.score || 0 // Ensure score is set here too
+            });
           }
         }
       } catch (error) {
@@ -612,11 +616,11 @@ export const Game: React.FC = () => {
               started: true,
               picks: [],
               score: 0,
-              timestamp: Date.now(),
+        timestamp: Date.now(),
               optimalScore: challenge.optimalScore,
               optimalPicks: challenge.optimalPicks,
               teams: challenge.teams
-            };
+      };
             localStorage.setItem(key, JSON.stringify(startedObj));
           }
         }
@@ -1062,19 +1066,31 @@ export const Game: React.FC = () => {
 
   // Function to complete pick (used for both Brady and normal submissions)
   const completePick = (name: string, wins: number, displayName: string, usedHelp: boolean = false) => {
-    console.log('🎯 Completing pick:', { name, wins, displayName, usedHelp });
+    console.log('Completing pick with wins:', wins); // Debug log
     
-    const isBradyPick = name.toLowerCase().includes('brady');
-
-    // Calculate points - half points if help was used in hard mode
+    // Calculate points
     const pointsAwarded = (!isEasyMode && usedHelp) ? Math.floor(wins / 2) : wins;
-    console.log('🎯 Points awarded:', pointsAwarded);
-
+    console.log('Points awarded:', pointsAwarded); // Debug log
+    
+    // Add the pick but DON'T update score yet - we'll do that after animation
+    addPick(name, pointsAwarded, displayName, usedHelp);
+    
+    // Get current state after pick
+    const currentState = useGameStore.getState();
+    console.log('Current state after pick:', currentState); // Debug log
+    
     // Reset any existing effects
     setShowScoreDisplay(false);
     setShowHelpPenalty(false);
 
+    // Use assisted feedback messages if this pick used help
+    const feedbackMsg = getRandomFeedbackMessage(
+      usedHelp ? ASSISTED_FEEDBACK_MESSAGES : CORRECT_FEEDBACK_MESSAGES
+    );
+    setFeedback(feedbackMsg);
+
     // For Brady picks, only show the Brady effect
+    const isBradyPick = name.toLowerCase().includes('brady');
     if (isBradyPick) {
       console.log('🎯 Showing Brady effect');
       setLastScore(pointsAwarded);
@@ -1091,12 +1107,6 @@ export const Game: React.FC = () => {
       setShowScoreDisplay(true);
     }
 
-    // Use assisted feedback messages if this pick used help
-    const feedbackMsg = getRandomFeedbackMessage(
-      usedHelp ? ASSISTED_FEEDBACK_MESSAGES : CORRECT_FEEDBACK_MESSAGES
-    );
-    setFeedback(feedbackMsg);
-    
     // Clear input and validation state
     setInput('');
     setIsValidInput(null);
@@ -1104,33 +1114,15 @@ export const Game: React.FC = () => {
     setAvailableQBs([]);
     setIsValidInput(true);
 
-    // Reset validation state after feedback duration
-    setTimeout(() => {
-      setIsValidInput(null);
-    }, 2000);
-
-    // Add the pick immediately but don't update score yet
-    addPick(name, pointsAwarded, displayName, usedHelp);
-    
     // Set the help state based on the usedHelp parameter, only in hard mode
     if (!isEasyMode) {
       useGameStore.setState({ currentPickUsedHelp: usedHelp });
     }
 
-    if (useGameStore.getState().gameMode === 'daily') {
-      const today = new Date();
-      const yyyy = today.getFullYear();
-      const mm = String(today.getMonth() + 1).padStart(2, '0');
-      const dd = String(today.getDate()).padStart(2, '0');
-      const key = `dailyChallenge-${yyyy}-${mm}-${dd}`;
-      const prev = localStorage.getItem(key);
-      let obj = prev ? JSON.parse(prev) : {};
-      obj.started = true;
-      obj.picks = useGameStore.getState().picks;
-      obj.score = useGameStore.getState().totalScore;
-      obj.timestamp = Date.now();
-      localStorage.setItem(key, JSON.stringify(obj));
-    }
+    // Reset validation state after feedback duration
+    setTimeout(() => {
+      setIsValidInput(null);
+    }, 2000);
   };
 
   const handleQBSelect = (qbName: string) => {
@@ -1170,6 +1162,34 @@ export const Game: React.FC = () => {
 
     // Update the total score when the animation completes
     updateScore(lastScore);
+    
+    // Save state after score update for daily challenge
+    const currentState = useGameStore.getState();
+    if (currentState.gameMode === 'daily') {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const key = `dailyChallenge-${yyyy}-${mm}-${dd}`;
+      
+      // Calculate total score from all picks
+      const calculatedScore = currentState.picks.reduce((total: number, pick: { wins: number }) => total + pick.wins, 0);
+      
+      // Save with verified score
+      const saveObj = {
+        started: true,
+        picks: currentState.picks,
+        score: calculatedScore,
+        timestamp: Date.now(),
+        teams: teamSequence,
+        gameStartTime: currentState.gameStartTime,
+        optimalScore: currentState.optimalScore,
+        optimalPicks: currentState.optimalPicks
+      };
+      
+      console.log('Saving game state after animation:', saveObj); // Debug log
+      localStorage.setItem(key, JSON.stringify(saveObj));
+    }
 
     // If this was the last round, trigger celebration instead of next round
     if (picks.length === ROUNDS_PER_GAME) {
@@ -1211,6 +1231,34 @@ export const Game: React.FC = () => {
 
     // Add the halved score to the total
     updateScore(Math.floor(helpPenaltyScore / 2));
+    
+    // Save state after score update for daily challenge
+    const currentState = useGameStore.getState();
+    if (currentState.gameMode === 'daily') {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const key = `dailyChallenge-${yyyy}-${mm}-${dd}`;
+      
+      // Calculate total score from all picks
+      const calculatedScore = currentState.picks.reduce((total: number, pick: { wins: number }) => total + pick.wins, 0);
+      
+      // Save with verified score
+      const saveObj = {
+        started: true,
+        picks: currentState.picks,
+        score: calculatedScore,
+        timestamp: Date.now(),
+        teams: teamSequence,
+        gameStartTime: currentState.gameStartTime,
+        optimalScore: currentState.optimalScore,
+        optimalPicks: currentState.optimalPicks
+      };
+      
+      console.log('Saving game state after help penalty:', saveObj); // Debug log
+      localStorage.setItem(key, JSON.stringify(saveObj));
+    }
 
     // Reset help state
     console.log('🎯 Resetting currentPickUsedHelp state');
@@ -1240,6 +1288,34 @@ export const Game: React.FC = () => {
     
     // Update the total score when Brady effect completes
     updateScore(lastScore);
+    
+    // Save state after score update for daily challenge
+    const currentState = useGameStore.getState();
+    if (currentState.gameMode === 'daily') {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const key = `dailyChallenge-${yyyy}-${mm}-${dd}`;
+      
+      // Calculate total score from all picks
+      const calculatedScore = currentState.picks.reduce((total: number, pick: { wins: number }) => total + pick.wins, 0);
+      
+      // Save with verified score
+      const saveObj = {
+        started: true,
+        picks: currentState.picks,
+        score: calculatedScore,
+        timestamp: Date.now(),
+        teams: teamSequence,
+        gameStartTime: currentState.gameStartTime,
+        optimalScore: currentState.optimalScore,
+        optimalPicks: currentState.optimalPicks
+      };
+      
+      console.log('Saving game state after Brady effect:', saveObj); // Debug log
+      localStorage.setItem(key, JSON.stringify(saveObj));
+    }
     
     // Start next round
     startNextRound();

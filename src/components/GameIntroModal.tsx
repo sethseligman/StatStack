@@ -32,19 +32,27 @@ export const GameIntroModal: React.FC<GameIntroModalProps> = ({ onClose }) => {
     if (savedGame) {
       try {
         const gameData = JSON.parse(savedGame);
+        console.log('Loading saved game data:', gameData); // Debug log
+        
         if (gameData.completed) {
           setDailyStatus('completed');
           setCurrentDailyProgress({ round: 20, score: gameData.score });
         } else if (gameData.picks && gameData.picks.length > 0) {
+          // Calculate score from picks as a verification
+          const calculatedScore = gameData.picks.reduce((total: number, pick: { wins: number }) => total + pick.wins, 0);
+          console.log('Calculated score from picks:', calculatedScore); // Debug log
+          console.log('Stored score:', gameData.score); // Debug log
+          
           setDailyStatus('in-progress');
           setCurrentDailyProgress({
             round: gameData.picks.length,
-            score: gameData.score || 0
+            score: gameData.score || calculatedScore
           });
         } else {
           setDailyStatus('not-started');
         }
-      } catch {
+      } catch (error) {
+        console.error('Error parsing saved game:', error);
         setDailyStatus('not-started');
       }
     } else {
@@ -59,7 +67,6 @@ export const GameIntroModal: React.FC<GameIntroModalProps> = ({ onClose }) => {
     setModeLocked(true);
     
     if (mode === 'daily' && dailyStatus === 'in-progress') {
-      // Resume the game state from localStorage
       const today = new Date();
       const yyyy = today.getFullYear();
       const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -70,20 +77,44 @@ export const GameIntroModal: React.FC<GameIntroModalProps> = ({ onClose }) => {
       if (saved) {
         try {
           const obj = JSON.parse(saved);
-          if (obj.picks && Array.isArray(obj.picks) && obj.teams) {
+          console.log('Restoring game state:', obj); // Debug log
+          
+          if (obj.picks && Array.isArray(obj.picks)) {
+            // Calculate score from picks
+            const calculatedScore = obj.picks.reduce((total: number, pick: { wins: number }) => total + pick.wins, 0);
+            console.log('Calculated score:', calculatedScore); // Debug log
+            console.log('Stored score:', obj.score); // Debug log
+            
+            // Always use the higher of the two scores to prevent any loss
+            const finalScore = Math.max(calculatedScore, obj.score || 0);
+            console.log('Final score to use:', finalScore); // Debug log
+            
+            // Update the store with the correct score
             useGameStore.setState({
               picks: obj.picks,
-              totalScore: obj.score || 0,
+              totalScore: finalScore,
               gameMode: 'daily',
               optimalScore: obj.optimalScore || 0,
               optimalPicks: obj.optimalPicks || [],
-              isGameOver: false
+              isGameOver: false,
+              gameStartTime: obj.gameStartTime || obj.timestamp || Date.now()
             });
-            // Set the current team to the next team in the sequence
-            const currentTeam = obj.teams[obj.picks.length];
-            useGameStore.getState().setCurrentTeam(currentTeam);
+            
+            // Also update localStorage with the correct score
+            const updatedSave = {
+              ...obj,
+              score: finalScore
+            };
+            localStorage.setItem(key, JSON.stringify(updatedSave));
+            
+            if (obj.teams) {
+              const currentTeam = obj.teams[obj.picks.length];
+              useGameStore.getState().setCurrentTeam(currentTeam);
+            }
           }
-        } catch {}
+        } catch (error) {
+          console.error('Error restoring game state:', error);
+        }
       }
     }
     

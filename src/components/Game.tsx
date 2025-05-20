@@ -279,41 +279,41 @@ const Game: React.FC = () => {
       {showIntroModal && (
         <GameIntroModal onClose={() => setShowIntroModal(false)} />
       )}
-      <GameContainer>
-        <Title>Make Your Pick</Title>
-        <div className="text-center mb-4">
-          <h2 className="text-xl font-bold">Current Team: {currentTeam}</h2>
-          <p className="text-gray-600">Pick {picks.length + 1} of 20</p>
-        </div>
-        <InputContainer>
-          <Input
-            type="text"
-            value={selectedQB}
-            onChange={(e) => {
-              console.log('✍️ QB input changed:', e.target.value);
-              setSelectedQB(e.target.value);
-            }}
-            placeholder="Enter QB name..."
-            list="qb-list"
-          />
-          <datalist id="qb-list">
-            {qbList.map((qb: string) => (
-              <option key={qb} value={qb} />
-            ))}
-          </datalist>
-          <SubmitButton onClick={handleSubmit} disabled={!selectedQB}>
-            Submit
-          </SubmitButton>
-        </InputContainer>
-        <PicksList>
-          {picks.map((pick, index) => (
-            <PickItem key={index} isRecent={index === picks.length - 1}>
-              <PickName>{pick.displayName}</PickName>
-              <PickScore>+{pick.wins}</PickScore>
-            </PickItem>
+    <GameContainer>
+      <Title>Make Your Pick</Title>
+      <div className="text-center mb-4">
+        <h2 className="text-xl font-bold">Current Team: {currentTeam}</h2>
+        <p className="text-gray-600">Pick {picks.length + 1} of 20</p>
+      </div>
+      <InputContainer>
+        <Input
+          type="text"
+          value={selectedQB}
+          onChange={(e) => {
+            console.log('✍️ QB input changed:', e.target.value);
+            setSelectedQB(e.target.value);
+          }}
+          placeholder="Enter QB name..."
+          list="qb-list"
+        />
+        <datalist id="qb-list">
+          {qbList.map((qb: string) => (
+            <option key={qb} value={qb} />
           ))}
-        </PicksList>
-      </GameContainer>
+        </datalist>
+        <SubmitButton onClick={handleSubmit} disabled={!selectedQB}>
+          Submit
+        </SubmitButton>
+      </InputContainer>
+      <PicksList>
+        {picks.map((pick, index) => (
+          <PickItem key={index} isRecent={index === picks.length - 1}>
+            <PickName>{pick.displayName}</PickName>
+            <PickScore>+{pick.wins}</PickScore>
+          </PickItem>
+        ))}
+      </PicksList>
+    </GameContainer>
     </>
   );
 };
