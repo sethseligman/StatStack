@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useRef, useState, forwardRef } from 'react';
 
 interface AnimatedInfoButtonProps {

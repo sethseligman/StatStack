@@ -1,0 +1,15 @@
+console.log('🚀 Starting minimal loop test in generateDailyChallenge.ts');
+let i = 0;
+while (i < 20) {
+  console.log('i:', i);
+  i++;
+}
+
+async function main() {
+  console.log('🚀 Starting minimal loop test in generateDailyChallenge.ts');
+  let i = 0;
+  while (i < 20) {
+    console.log('i:', i);
+    i++;
+  }
+} 

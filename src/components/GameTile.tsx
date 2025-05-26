@@ -1,3 +1,4 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChallengeMetadata } from '../core/types/challenge';
 import { useGameStore } from '../store/gameStore';

@@ -1,3 +1,4 @@
+import React from 'react';
 import { CHALLENGES } from '../core/types/challenge';
 import { GameTile } from '../components/GameTile';
 

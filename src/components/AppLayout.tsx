@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useGameStore } from '../store/gameStore';
 
 export const AppLayout: React.FC = () => {
   const navigate = useNavigate();
   const { initializeGame } = useGameStore();
+
+  useEffect(() => {
+    // Check if user prefers dark mode
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();

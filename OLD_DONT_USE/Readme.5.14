@@ -1,0 +1,80 @@
+# StatStack Lite Debugging Log - May 14
+
+## Initial Issue
+The GameOver component was crashing on page refresh or when returning to the /game route, manifesting as:
+- Blank blue screen
+- TypeError related to accessing properties of null
+- State restoration issues
+
+## Initial State
+- Game state (totalScore, picks, optimalScore, optimalPicks) was being persisted to localStorage
+- GameOver component was trying to access data before full restoration
+- No proper error handling or defensive programming in place
+
+## Attempted Solutions
+
+### 1. Type Definition Alignment
+- Updated GameState interface in core/types/game.ts
+- Aligned resultType definitions across components
+- Added resultType to SavedGameState interface
+- **Result**: Did not resolve the core issue
+
+### 2. State Restoration Enhancement
+- Added comprehensive state restoration in Game component
+- Added validation guards for saved state
+- Added default values for all state properties
+- **Result**: Still experiencing initialization issues
+
+### 3. Defensive Programming Implementation
+- Added error states and handling
+- Added default values for all destructured state properties
+- Added try/catch blocks around critical operations
+- Added user-friendly error UI with recovery options
+- **Result**: Improved error handling but core issue persists
+
+### 4. Initialization Flow Modification
+- Added immediate game state initialization on component mount
+- Modified setGameMode to handle initialization
+- Added state verification after restoration
+- **Result**: Still seeing initialization timing issues
+
+## Current Issues
+1. State Initialization Timing
+   - Game state may not be properly initialized before component render
+   - Possible race condition between initialization and state access
+
+2. Type Errors
+   - Still seeing "Cannot read properties of null" errors
+   - Possible issues with null checks not catching all edge cases
+
+3. State Restoration
+   - Uncertainty about whether state is properly restored before access
+   - Possible issues with localStorage data format or timing
+
+## Next Steps to Consider
+1. Review the initialization flow in App.tsx and ensure proper order of operations
+2. Add state machine pattern to handle game state transitions more reliably
+3. Consider adding a loading state at the router level
+4. Review localStorage handling and possibly add versioning
+5. Add more comprehensive error boundaries
+6. Consider moving state initialization to a higher level in the component tree
+
+## Current Implementation Details
+
+### Game Component
+- Handles initial state setup
+- Manages state restoration from localStorage
+- Provides error recovery UI
+- Routes to appropriate game state
+
+### GameOver Component
+- Handles game completion state
+- Calculates and displays final scores
+- Manages optimal path calculation
+- Provides share and restart functionality
+
+## Environment
+- React with TypeScript
+- Zustand for state management
+- Firebase for hosting
+- Vite for build tooling 

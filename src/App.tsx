@@ -6,6 +6,7 @@ import { Game } from './pages/Game';
 import { LeaderboardPage } from './pages/Leaderboard';
 import { Admin } from './pages/Admin';
 import { TestEffects } from './pages/TestEffects';
+import QBGame from './games/qb-wins/QBGame';
 import './index.css';
 
 const App: React.FC = () => {
@@ -14,7 +15,7 @@ const App: React.FC = () => {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<LobbyPage />} />
-          <Route path="/game/qb-wins" element={<Game />} />
+          <Route path="/game/qb-wins" element={<QBGame />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/test-effects" element={<TestEffects />} />
